@@ -7,7 +7,7 @@
     i32.eq         ;; compare $n%2 and 0 
   )
 
-  (func $eq_2 (param $n i32) (result $i32)
+  (func $eq_2 (param $n i32) (result i32)
     local.get $n
     i32.const 2
     i32.eq         ;; if $n==2 return 1  
@@ -42,9 +42,18 @@
       br_if $not_prime
       (local.set $i (i32.const 1))
       (loop $prime_test_loop
-        ;; todo!
+        (local.tee $i (i32.add (local.get $i) (i32.const 2))) ;; inc counter by 2
+        local.get $n ;; push to stack
 
-        br_if $not_prime
+        i32.ge_u
+        if 
+          i32.const 1
+          return
+        end
+
+        (call $multiple_check (local.get $n) (local.get $i))
+
+        br_if $not_prime ;; if top of stack is 1, 
         br $prime_test_loop
       )
     )
