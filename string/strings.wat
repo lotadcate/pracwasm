@@ -12,6 +12,35 @@
  (data (i32.const 512) "\16length-prefixed string") ;; 22(16 hex) length
  (data (i32.const 640) "\1eanother length-prefixed string") ;; 30(1e hex) length
 
+ (func $byte_copy (param $source i32) (param $dest i32) (param $len i32)
+   (local $last_source_byte i32)
+   local.get $source
+   local.get $len
+   i32.add
+   local.set $last_source_byte
+
+   (loop $copy_loop (block $break
+     local.get $dest ;; to use i32.store8 calling
+     (i32.load8_u (local.get $source)) ;; read 1 byte from $source
+     i32.store8 ;; add 1 byte to $dest
+     
+     local.get $dest
+     i32.const 1
+     i32.add
+     local.set $dest
+
+     local.get $source
+     i32.const 1
+     i32.add
+     local.tee $source
+
+     local.get $last_source_byte
+     i32.eq
+     br_if $break
+     br $copy_loop 
+   ))
+ )
+
  (func (export "main")
    (call $null_str (i32.const 0))
    (call $null_str (i32.const 128))
