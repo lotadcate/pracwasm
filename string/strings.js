@@ -16,6 +16,12 @@ let importObject = {
       const bytes = new Uint8Array(memory.buffer, str_pos, str_len);
       const log_string = new TextDecoder('utf8').decode(bytes);
       console.log(log_string);
+    },
+    len_prefix: function(str_pos) {
+      const str_len = new Uint8Array(memory.buffer, str_pos, 1)[0];
+      const bytes = new Uint8Array(memory.buffer, str_pos + 1, str_len);
+      const log_string = new TextDecoder('utf8').decode(bytes);
+      console.log(log_string);
     }
   }
 };
